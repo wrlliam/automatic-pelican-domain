@@ -35,6 +35,6 @@ export const app = new Elysia()
     })
   )
   .listen({
-    port: 6741,
+    port: 3003,
     hostname: "0.0.0.0",
   });
