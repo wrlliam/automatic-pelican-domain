@@ -50,7 +50,7 @@ function generateRandomString(length: number = 12): string {
 async function getZoneId(token: string): Promise<string | null> {
   try {
     const response = await fetch(
-      "https://api.cloudflare.com/client/v4/zones?name=jtpr.cloud",
+      "https://api.cloudflare.com/client/v4/zones?name=jtpr.host",
       {
         headers: {
           Authorization: `Bearer ${token}`,
