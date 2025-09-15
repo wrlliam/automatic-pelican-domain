@@ -45,12 +45,12 @@ function generateRandomString(length: number = 12): string {
 }
 
 /**
- * Get Cloudflare Zone ID for jtpr.host
+ * Get Cloudflare Zone ID for jptr.host
  */
 async function getZoneId(token: string): Promise<string | null> {
   try {
     const response = await fetch(
-      "https://api.cloudflare.com/client/v4/zones?name=jtpr.host",
+      "https://api.cloudflare.com/client/v4/zones?name=jptr.host",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -137,7 +137,7 @@ async function processDNSCreation(webhook: PelicanWebhook): Promise<void> {
   // Generate random string and create subdomain
   const randomString = generateRandomString(12);
   const serverName = webhook.name.toLowerCase().replace(/[^a-z0-9-]/g, "-");
-  const subdomain = `${serverName}-${randomString}.jtpr.host`;
+  const subdomain = `${serverName}-${randomString}.jptr.host`;
 
   console.log(`🎯 Creating DNS records for: ${subdomain}`);
   console.log(`📍 Port: ${webhook.allocation.port}`);
