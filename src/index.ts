@@ -106,9 +106,6 @@ async function createSRVRecord(
       }
     );
 
-    const result = await response.json();
-    console.log("SRV Response:", JSON.stringify(result, null, 2));
-
     const data = (await response.json()) as unknown as CloudflareResponse;
 
     if (data.success) {
