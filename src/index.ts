@@ -45,7 +45,7 @@ function generateRandomString(length: number = 12): string {
 }
 
 /**
- * Get Cloudflare Zone ID for jtpr.cloud
+ * Get Cloudflare Zone ID for jtpr.host
  */
 async function getZoneId(token: string): Promise<string | null> {
   try {
@@ -101,7 +101,7 @@ async function createSRVRecord(
       }
     );
 
-   const data = (await response.json()) as unknown as CloudflareResponse;
+    const data = (await response.json()) as unknown as CloudflareResponse;
 
     if (data.success) {
       console.log(
@@ -137,7 +137,7 @@ async function processDNSCreation(webhook: PelicanWebhook): Promise<void> {
   // Generate random string and create subdomain
   const randomString = generateRandomString(12);
   const serverName = webhook.name.toLowerCase().replace(/[^a-z0-9-]/g, "-");
-  const subdomain = `${serverName}-${randomString}.jtpr.cloud`;
+  const subdomain = `${serverName}-${randomString}.jtpr.host`;
 
   console.log(`🎯 Creating DNS records for: ${subdomain}`);
   console.log(`📍 Port: ${webhook.allocation.port}`);
@@ -150,7 +150,6 @@ async function processDNSCreation(webhook: PelicanWebhook): Promise<void> {
   }
 
   const target = "pelican-server-wings-ds-01.jptr.host";
-
 
   // Create SRV record
   const srvRecordSuccess = await createSRVRecord(
