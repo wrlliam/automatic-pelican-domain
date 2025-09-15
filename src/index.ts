@@ -84,27 +84,30 @@ async function createSRVRecord(
   target: string
 ): Promise<boolean> {
   try {
-   const response = await fetch(
-     `https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records`,
-     {
-       method: "POST",
-       headers: {
-         Authorization: `Bearer ${token}`,
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify({
-         type: "SRV",
-         name: `_minecraft._tcp.${name}`,
-         data: {
-           priority: 0,
-           weight: 5,
-           port: port,
-           target: "pelican-server-wings-ds-01.jptr.host",
-         },
-         ttl: 300,
-       }),
-     }
-   );
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "SRV",
+          name: `_minecraft._tcp.${name}`,
+          data: {
+            priority: 0,
+            weight: 5,
+            port: port,
+            target: "pelican-server-wings-ds-01.jptr.host.",
+          },
+          ttl: 300,
+        }),
+      }
+    );
+
+    const result = await response.json();
+    console.log("SRV Response:", JSON.stringify(result, null, 2));
 
     const data = (await response.json()) as unknown as CloudflareResponse;
 
