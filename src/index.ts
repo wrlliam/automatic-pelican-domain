@@ -2,7 +2,7 @@ import Elysia from "elysia";
 import logixlysia from "logixlysia";
 
 export const app = new Elysia()
-  .get(`/`, ({ request, body }) => {
+  .post(`/`, ({ request, body }) => {
     console.log(request);
 
     return new Response(
