@@ -1,0 +1,16 @@
+{
+  "name": "automatic-domain-reg-pelican",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "elysia": "^1.4.5",
+    "logixlysia": "^5.1.1"
+  }
+}
