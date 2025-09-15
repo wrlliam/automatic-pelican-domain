@@ -2,17 +2,29 @@ import Elysia from "elysia";
 import logixlysia from "logixlysia";
 
 export const app = new Elysia()
-  .post(`/`, ({ request, body }) => {
-    console.log(request);
+  .post(`/`, async ({ request, body }) => {
+    // Log basic request info
+    console.log("📥 Incoming Webhook:");
+    console.log("Headers:", Object.fromEntries(request.headers));
+    console.log("Method:", request.method);
+    console.log("URL:", request.url);
 
-    return new Response(
-      JSON.stringify({
-        ok: true,
-      }),
-      {
-        status: 200,
+    // Log body (Pelican sends JSON with allocations inside)
+    try {
+      console.log("Body:", JSON.stringify(body, null, 2));
+      const att = (body as any).attributes as any;
+      // If you want just the primary allocation:
+      if (att.allocations) {
+        const primary = att.allocations.find((a: any) => a.primary);
+        if (primary) {
+          console.log(`Primary Allocation: ${primary.ip}:${primary.port}`);
+        }
       }
-    );
+    } catch (err) {
+      console.error("❌ Failed to parse body:", err);
+    }
+
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
   })
   .use(
     logixlysia({
