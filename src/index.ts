@@ -1,31 +1,57 @@
 import Elysia from "elysia";
 import logixlysia from "logixlysia";
 
+/**
+ * Types for Pelican webhook payload
+ */
+interface Allocation {
+  id: number;
+  node_id: number;
+  ip: string;
+  port: number;
+  server_id: number;
+  primary?: boolean;
+}
+
+interface PelicanWebhook {
+  id: number;
+  uuid: string;
+  uuid_short: string;
+  name: string;
+  node_id: number;
+  allocation_id: number;
+  allocation?: Allocation;
+  event?: string;
+  [key: string]: any;
+}
+
 export const app = new Elysia()
-  .post(`/`, async ({ request, body }) => {
-    // Log basic request info
-    console.log("📥 Incoming Webhook:");
-    console.log("Headers:", Object.fromEntries(request.headers));
-    console.log("Method:", request.method);
-    console.log("URL:", request.url);
+  // Tell Elysia the body type
+  .post(
+    "/",
+    ({ request, body }) => {
+      console.log("📥 Incoming Pelican Webhook");
 
-    // Log body (Pelican sends JSON with allocations inside)
-    try {
-      console.log("Body:", JSON.stringify(body, null, 2));
-      const att = (body as any).attributes as any;
-      // If you want just the primary allocation:
-      if (att.allocations) {
-        const primary = att.allocations.find((a: any) => a.primary);
-        if (primary) {
-          console.log(`Primary Allocation: ${primary.ip}:${primary.port}`);
-        }
+      const b = body as PelicanWebhook
+
+      // Headers
+      console.log("🔹 Headers:", Object.fromEntries(request.headers));
+
+      // Body
+      console.log("🔹 Body:", JSON.stringify(body, null, 2));
+
+      // Extract allocation
+      if (b.allocation) {
+        console.log(
+          `✅ Allocation: ${b.allocation.ip}:${b.allocation.port}`
+        );
+      } else {
+        console.log("⚠️ No allocation data found in webhook payload.");
       }
-    } catch (err) {
-      console.error("❌ Failed to parse body:", err);
-    }
 
-    return new Response(JSON.stringify({ ok: true }), { status: 200 });
-  })
+      return { ok: true }; // <- let Elysia serialize instead of manual Response
+    }
+  )
   .use(
     logixlysia({
       config: {
