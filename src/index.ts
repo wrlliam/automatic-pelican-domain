@@ -101,7 +101,7 @@ async function createSRVRecord(
             port: port,
             target: "pelican-server-wings-ds-01.jptr.host.",
           },
-          ttl: "auto",
+          ttl: 0,
         }),
       }
     );
