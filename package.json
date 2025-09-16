@@ -4,12 +4,17 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.31.4",
+    "tsx": "^4.20.5"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "dotenv": "^17.2.2",
+    "drizzle-orm": "^0.44.5",
     "elysia": "^1.4.5",
     "logixlysia": "^5.1.1"
   }

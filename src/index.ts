@@ -1,5 +1,7 @@
 import Elysia from "elysia";
 import logixlysia from "logixlysia";
+import { db } from "./db";
+import { node } from "./db/schema";
 
 /**
  * Types for Pelican webhook payload
@@ -170,32 +172,45 @@ async function processDNSCreation(webhook: PelicanWebhook): Promise<void> {
     console.log(
       `🔗 Server accessible at: ${subdomain}:${webhook.allocation.port}`
     );
+
+    await db.insert(node).values({
+      allocation: `${webhook.allocation.port}`,
+      rgs: randomString,
+      previous_name: serverName,
+      domain: subdomain,
+    }).execute().catch(() => {
+      console.error(`⚠️ Failed to save record, ${subdomain}, ${webhook.allocation?.port}`);
+    })
   } else {
     console.error("⚠️ Some DNS records failed to create");
   }
 }
 
 export const app = new Elysia()
-  // Tell Elysia the body type
   .post("/", async ({ request, body }) => {
     console.log("📥 Incoming Pelican Webhook");
 
     const b = body as PelicanWebhook;
 
-    console.log(b.event);
+    const [type, name, ...other] = b.event?.split(": ") as string[];
+    const event_name = `${type?.toLowerCase()}-${name?.toLowerCase()}`;
 
-    // Extract allocation and process DNS
-    switch (b.event) {
-      case "server.Create":
+    switch (event_name) {
+      case "server.create":
         if (b.allocation) {
           console.log(`📊 Server: ${b.name} (${b.uuid_short})`);
           console.log(`🌐 Allocation: ${b.allocation.ip}:${b.allocation.port}`);
 
-          // Process DNS creation
           await processDNSCreation(b);
         } else {
           console.log("⚠️ No allocation data found in webhook payload.");
         }
+        break;
+      case "server.delete":
+        console.log(`Coming soon.... delete ${b.name} record`)
+        break;
+      default:
+        console.log("⚠️ Failed to find event_name");
     }
 
     return { ok: true };
