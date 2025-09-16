@@ -182,15 +182,20 @@ export const app = new Elysia()
 
     const b = body as PelicanWebhook;
 
-    // Extract allocation and process DNS
-    if (b.allocation) {
-      console.log(`📊 Server: ${b.name} (${b.uuid_short})`);
-      console.log(`🌐 Allocation: ${b.allocation.ip}:${b.allocation.port}`);
+    console.log(b.event);
 
-      // Process DNS creation
-      await processDNSCreation(b);
-    } else {
-      console.log("⚠️ No allocation data found in webhook payload.");
+    // Extract allocation and process DNS
+    switch (b.event) {
+      case "server.Create":
+        if (b.allocation) {
+          console.log(`📊 Server: ${b.name} (${b.uuid_short})`);
+          console.log(`🌐 Allocation: ${b.allocation.ip}:${b.allocation.port}`);
+
+          // Process DNS creation
+          await processDNSCreation(b);
+        } else {
+          console.log("⚠️ No allocation data found in webhook payload.");
+        }
     }
 
     return { ok: true };
